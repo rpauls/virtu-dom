@@ -80,23 +80,25 @@ function dfsWalk (oldNode, newNode, index, patches) {
  * @param {any} currentPatch
  */
 function diffChildren (oldChildren, newChildren, index, patches, currentPatch) {
-    var diffs = listDiff(oldChildren, newChildren, 'key');
-    newChildren = diffs.children;
+    var diffs = listDiff(oldChildren, newChildren, 'key'); // Diff two list in O(N)
+    newChildren = diffs.children; // Assign diffed children to newChildren
 
+    // Check if differences occured based on dfs walk moves
     if (diffs.moves.length) {
-        var reorderPatch = { type: patch.REORDER, moves: diffs.moves };
-        currentPatch.push(reorderPatch);
+        var reorderPatch = { type: patch.REORDER, moves: diffs.moves }; // Patch state
+        currentPatch[currentPatch.length] = reorderPatch; // Add reorderPatch to currentPatch
     }
 
-    var leftNode = null;
-    var currentNodeIndex = index;
+    var leftNode = null; // Initialize with null
+    var currentNodeIndex = index; // Initialize with value of index
 
+    // Iterate trough old children and call function for each one
     _h.each(oldChildren, function (child, i) {
-        var newChild = newChildren[i];
-        currentNodeIndex = (leftNode && leftNode.count) ? currentNodeIndex + leftNode.count + 1 : currentNodeIndex + 1;
-        dfsWalk(child, newChild, currentNodeIndex, patches);
-        leftNode = child;
-    })
+        var newChild = newChildren[i]; // Get new child
+        currentNodeIndex = (leftNode && leftNode.count) ? currentNodeIndex + leftNode.count + 1 : currentNodeIndex + 1; // Get current node index
+        dfsWalk(child, newChild, currentNodeIndex, patches); // Call depth-first search function for old and new child
+        leftNode = child; // Assign child to leftNode
+    });
 }
 
 /**
@@ -107,39 +109,38 @@ function diffChildren (oldChildren, newChildren, index, patches, currentPatch) {
  * @returns
  */
 function diffProps (oldNode, newNode) {
-    var count = 0;
-    var oldProps = oldNode.props;
-    var newProps = newNode.props;
+    var count = 0; // Initialize with value of zero
+    var oldProps = oldNode.props; // Initialize with properties of old node
+    var newProps = newNode.props; // Initialize with properties of new node
 
-    var key, value;
-    var propsPatches = {};
+    var key;
+    var propsPatches = {}; // Initialize with empty object
 
-    // Find out different properties
+    // Iterate trough old properties
     for (key in oldProps) {
-        value = oldProps[key];
-
-        if (newProps[key] !== value) {
-            count++;
-            propsPatches[key] = newProps[key];
+        // Check if properties differ
+        if (newProps[key] !== oldProps[key]) {
+            count++; // Raise counter
+            propsPatches[key] = newProps[key]; // Assign changed property to propsPatches
         }
     }
 
-    // Find out new property
+    // Iterate trough new properties
     for (key in newProps) {
-        value = newProps[key];
-
+        // Check if old property has identical key of new property,
+        // therefore check for new property
         if (!oldProps.hasOwnProperty(key)) {
-            count++;
-            propsPatches[key] = newProps[key];
+            count++; // Raise counter
+            propsPatches[key] = newProps[key]; // Assign new property to propsPatches
         }
     }
 
-    // If properties all are identical
+    // If properties are identical
     if (count === 0) {
-        return null;
+        return null; // Return null
     }
 
-    return propsPatches;
+    return propsPatches; // Return changes of properties
 }
 
 /**
@@ -149,7 +150,7 @@ function diffProps (oldNode, newNode) {
  * @returns
  */
 function isIgnoreChildren (node) {
-    return (node.props && node.props.hasOwnProperty('ignore'));
+    return (node.props && node.props.hasOwnProperty('ignore')); // Return boolean value
 }
 
 // Export module as 'diff'

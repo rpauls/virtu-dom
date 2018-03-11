@@ -14,8 +14,8 @@ const TEXT = 3;
  * @param {any} patches
  */
 function patch (node, patches) {
-    var walker = {index: 0};
-    dfsWalk(node, walker, patches);
+    var walker = {index: 0}; // Initialize with object containing key 'index' with value of zero
+    dfsWalk(node, walker, patches); // Call local depth-first search function passing node, walker and patches
 }
 
 /**
@@ -26,18 +26,20 @@ function patch (node, patches) {
  * @param {any} patches
  */
 function dfsWalk (node, walker, patches) {
-    var currentPatches = patches[walker.index];
+    var currentPatches = patches[walker.index]; // Initialize with value of current patches at walker index
 
-    var len = node.childNodes ? node.childNodes.length : 0;
+    var len = node.childNodes ? node.childNodes.length : 0; // Get length of childNodes
 
+    // Iterate trough child nodes based on child nodes length
     for (var i = 0; i < len; i++) {
-        var child = node.childNodes[i];
-        walker.index++;
-        dfsWalk(child, walker, patches);
+        var child = node.childNodes[i]; // Current child node
+        walker.index++; // Raise walker index
+        dfsWalk(child, walker, patches); // Call local depth-first search function
     }
 
+    // Check if changes exists
     if (currentPatches) {
-        applyPatches(node, currentPatches);
+        applyPatches(node, currentPatches); // Apply patches
     }
 }
 
