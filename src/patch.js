@@ -80,14 +80,18 @@ function reorderChildren (node, moves) {
     _h.each(moves, function (move) {
         var index = move.index;
 
-        if (move.type === 0) { // remove item
-            if (staticNodeList[index] === node.childNodes[index]) { // maybe have been removed for inserting
+        // Remove item if type is 0
+        if (move.type === 0) {
+            // Check if item has been removed for inserting
+            if (staticNodeList[index] === node.childNodes[index]) {
                 node.removeChild(node.childNodes[index]);
             }
 
             staticNodeList.splice(index, 1)
-        } else if (move.type === 1) { // insert item
+        // Insert item
+        } else if (move.type === 1) {
             var insertNode = maps[move.item.key] ? maps[move.item.key].cloneNode(true) : ((typeof move.item === 'object') ? move.item.render() : document.createTextNode(move.item));
+
             staticNodeList.splice(index, 0, insertNode);
             node.insertBefore(insertNode, node.childNodes[index] || null);
         }

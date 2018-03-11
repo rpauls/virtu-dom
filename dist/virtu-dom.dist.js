@@ -1,1 +1,162 @@
-!function(e){var t={};function n(r){if(t[r])return t[r].exports;var o=t[r]={i:r,l:!1,exports:{}};return e[r].call(o.exports,o,o.exports,n),o.l=!0,o.exports}n.m=e,n.c=t,n.d=function(e,t,r){n.o(e,t)||Object.defineProperty(e,t,{configurable:!1,enumerable:!0,get:r})},n.r=function(e){Object.defineProperty(e,"__esModule",{value:!0})},n.n=function(e){var t=e&&e.__esModule?function(){return e.default}:function(){return e};return n.d(t,"a",t),t},n.o=function(e,t){return Object.prototype.hasOwnProperty.call(e,t)},n.p="",n(n.s=7)}([function(e,t){var n=t;n.type=function(e){return Object.prototype.toString.call(e).replace(/\[object\s|\]/g,"")},n.isArray=function(e){return"Array"===n.type(e)},n.isString=function(e){return"String"===n.type(e)},n.truther=function(e){return!!e},n.slice=function(e,t){return Array.prototype.slice.call(e,t)},n.each=function(e,t){for(var n=0,r=e.length;n<r;n++)t(e[n],n)},n.toArray=function(e){if(!e)return[];for(var t=[],n=0,r=e.length;n<r;n++)t[t.length]=e[n];return t},n.setAttr=function(e,t,n){switch(console.log(e),t){case"style":e.style.cssText=n;break;case"value":var r=e.tagName||"";"input"===(r=r.toLowerCase())||"textarea"===r?e.value=n:e.setAttribute(t,n);break;default:e.setAttribute(t,n)}}},function(e,t,n){var r=n(0),o=0,i=1,c=2,a=3;function u(e,t){!function e(t,n,u){var s=u[n.index];var f=t.childNodes?t.childNodes.length:0;for(var l=0;l<f;l++){var p=t.childNodes[l];n.index++,e(p,n,u)}s&&function(e,t){r.each(t,function(t){switch(t.type){case o:var n="string"==typeof t.node?document.createTextNode(t.node):t.node.render();e.parentNode.replaceChild(n,e);break;case i:!function(e,t){var n=r.toArray(e.childNodes),o={};r.each(n,function(e){if(1===e.nodeType){var t=e.getAttribute("key");t&&(o[t]=e)}}),r.each(t,function(t){var r=t.index;if(0===t.type)n[r]===e.childNodes[r]&&e.removeChild(e.childNodes[r]),n.splice(r,1);else if(1===t.type){var i=o[t.item.key]?o[t.item.key].cloneNode(!0):"object"==typeof t.item?t.item.render():document.createTextNode(t.item);n.splice(r,0,i),e.insertBefore(i,e.childNodes[r]||null)}})}(e,t.moves);break;case c:!function(e,t){for(var n in t)if(void 0===t[n])e.removeAttribute(n);else{var o=t[n];r.setAttr(e,n,o)}}(e,t.props);break;case a:e.textContent?e.textContent=t.content:e.nodeValue=t.content;break;default:throw new Error("Unknown patch type "+t.type)}})}(t,s)}(e,{index:0},t)}u.REPLACE=o,u.REORDER=i,u.PROPS=c,u.TEXT=a,e.exports=u},function(e,t){function n(e,t){for(var n={},o=[],i=0,c=e.length;i<c;i++){var a=e[i],u=r(a,t);u?n[u]=i:o.push(a)}return{keyIndex:n,free:o}}function r(e,t){if(e&&t)return"string"==typeof t?e[t]:t(e)}t.makeKeyIndexAndFree=n,t.diff=function(e,t,o){for(var i,c,a=n(e,o),u=n(t,o),s=u.free,f=a.keyIndex,l=u.keyIndex,p=[],d=[],h=0,v=0;h<e.length;){if(c=r(i=e[h],o))if(l.hasOwnProperty(c)){var y=l[c];d.push(t[y])}else d.push(null);else{var g=s[v++];d.push(g||null)}h++}var m=d.slice(0);for(h=0;h<m.length;)null===m[h]?(A(h),w(h)):h++;for(var x=h=0;h<t.length;){c=r(i=t[h],o);var k=m[x],b=r(k,o);k?c===b?x++:f.hasOwnProperty(c)&&r(m[x+1],o)===c?(A(h),w(x),x++):N(h,i):N(h,i),h++}function A(e){var t={index:e,type:0};p.push(t)}function N(e,t){var n={index:e,item:t,type:1};p.push(n)}function w(e){m.splice(e,1)}return{moves:p,children:d}}},function(e,t,n){e.exports=n(2).diff},function(e,t,n){var r=n(0),o=n(1),i=n(3);function c(e,t,n,a){var u,s=[];if(null===t);else if(r.isString(e)&&r.isString(t))t!==e&&s.push({type:o.TEXT,content:t});else if(e.tagName===t.tagName&&e.key===t.key){var f=function(e,t){var n,r,o=0,i=e.props,c=t.props,a={};for(n in i)r=i[n],c[n]!==r&&(o++,a[n]=c[n]);for(n in c)r=c[n],i.hasOwnProperty(n)||(o++,a[n]=c[n]);if(0===o)return null;return a}(e,t);f&&s.push({type:o.PROPS,props:f}),(u=t).props&&u.props.hasOwnProperty("ignore")||function(e,t,n,a,u){var s=i(e,t,"key");if(t=s.children,s.moves.length){var f={type:o.REORDER,moves:s.moves};u.push(f)}var l=null,p=n;r.each(e,function(e,n){var r=t[n];p=l&&l.count?p+l.count+1:p+1,c(e,r,p,a),l=e})}(e.children,t.children,n,a,s)}else s.push({type:o.REPLACE,node:t});s.length&&(a[n]=s)}e.exports=function(e,t){var n={};return c(e,t,0,n),n}},function(e,t,n){var r=n(0);function o(e,t,n){if(!(this instanceof o))return r.isArray(n)||null==n||(n=r.slice(arguments,2).filter(r.truther)),new o(e,t,n);r.isArray(t)&&(n=t,t={}),this.tagName=e,this.props=t||{},this.children=n||[],this.key=t?t.key:void 0;var i=0;r.each(this.children,function(e,t){e instanceof o?i+=e.count:n[t]=""+e,i++}),this.count=i}o.prototype.render=function(){var e=document.createElement(this.tagName),t=this.props;for(var n in t){var i=t[n];r.setAttr(e,n,i)}return r.each(this.children,function(t){var n=t instanceof o?t.render():document.createTextNode(t);e.appendChild(n)}),e},e.exports=o},function(e,t,n){t.element=n(5),t.diff=n(4),t.patch=n(1)},function(e,t,n){window.vd=n(6)}]);
+/******/ (function(modules) { // webpackBootstrap
+/******/ 	// The module cache
+/******/ 	var installedModules = {};
+/******/
+/******/ 	// The require function
+/******/ 	function __webpack_require__(moduleId) {
+/******/
+/******/ 		// Check if module is in cache
+/******/ 		if(installedModules[moduleId]) {
+/******/ 			return installedModules[moduleId].exports;
+/******/ 		}
+/******/ 		// Create a new module (and put it into the cache)
+/******/ 		var module = installedModules[moduleId] = {
+/******/ 			i: moduleId,
+/******/ 			l: false,
+/******/ 			exports: {}
+/******/ 		};
+/******/
+/******/ 		// Execute the module function
+/******/ 		modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+/******/
+/******/ 		// Flag the module as loaded
+/******/ 		module.l = true;
+/******/
+/******/ 		// Return the exports of the module
+/******/ 		return module.exports;
+/******/ 	}
+/******/
+/******/
+/******/ 	// expose the modules object (__webpack_modules__)
+/******/ 	__webpack_require__.m = modules;
+/******/
+/******/ 	// expose the module cache
+/******/ 	__webpack_require__.c = installedModules;
+/******/
+/******/ 	// define getter function for harmony exports
+/******/ 	__webpack_require__.d = function(exports, name, getter) {
+/******/ 		if(!__webpack_require__.o(exports, name)) {
+/******/ 			Object.defineProperty(exports, name, {
+/******/ 				configurable: false,
+/******/ 				enumerable: true,
+/******/ 				get: getter
+/******/ 			});
+/******/ 		}
+/******/ 	};
+/******/
+/******/ 	// define __esModule on exports
+/******/ 	__webpack_require__.r = function(exports) {
+/******/ 		Object.defineProperty(exports, '__esModule', { value: true });
+/******/ 	};
+/******/
+/******/ 	// getDefaultExport function for compatibility with non-harmony modules
+/******/ 	__webpack_require__.n = function(module) {
+/******/ 		var getter = module && module.__esModule ?
+/******/ 			function getDefault() { return module['default']; } :
+/******/ 			function getModuleExports() { return module; };
+/******/ 		__webpack_require__.d(getter, 'a', getter);
+/******/ 		return getter;
+/******/ 	};
+/******/
+/******/ 	// Object.prototype.hasOwnProperty.call
+/******/ 	__webpack_require__.o = function(object, property) { return Object.prototype.hasOwnProperty.call(object, property); };
+/******/
+/******/ 	// __webpack_public_path__
+/******/ 	__webpack_require__.p = "";
+/******/
+/******/
+/******/ 	// Load entry module and return exports
+/******/ 	return __webpack_require__(__webpack_require__.s = "./index.js");
+/******/ })
+/************************************************************************/
+/******/ ({
+
+/***/ "./index.js":
+/*!******************!*\
+  !*** ./index.js ***!
+  \******************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("window.vd = __webpack_require__(/*! ./src/virtu-dom */ \"./src/virtu-dom.js\");\n\n//# sourceURL=webpack:///./index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/list-diff2/index.js":
+/*!******************************************!*\
+  !*** ./node_modules/list-diff2/index.js ***!
+  \******************************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("module.exports = __webpack_require__(/*! ./lib/diff */ \"./node_modules/list-diff2/lib/diff.js\").diff\n\n\n//# sourceURL=webpack:///./node_modules/list-diff2/index.js?");
+
+/***/ }),
+
+/***/ "./node_modules/list-diff2/lib/diff.js":
+/*!*********************************************!*\
+  !*** ./node_modules/list-diff2/lib/diff.js ***!
+  \*********************************************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("/**\r\n * Diff two list in O(N).\r\n * @param {Array} oldList - Original List\r\n * @param {Array} newList - List After certain insertions, removes, or moves\r\n * @return {Object} - {moves: <Array>}\r\n *                  - moves is a list of actions that telling how to remove and insert\r\n */\r\nfunction diff (oldList, newList, key) {\r\n  var oldMap = makeKeyIndexAndFree(oldList, key)\r\n  var newMap = makeKeyIndexAndFree(newList, key)\r\n\r\n  var newFree = newMap.free\r\n\r\n  var oldKeyIndex = oldMap.keyIndex\r\n  var newKeyIndex = newMap.keyIndex\r\n\r\n  var moves = []\r\n\r\n  // a simulate list to manipulate\r\n  var children = []\r\n  var i = 0\r\n  var item\r\n  var itemKey\r\n  var freeIndex = 0\r\n\r\n  // fist pass to check item in old list: if it's removed or not\r\n  while (i < oldList.length) {\r\n    item = oldList[i]\r\n    itemKey = getItemKey(item, key)\r\n    if (itemKey) {\r\n      if (!newKeyIndex.hasOwnProperty(itemKey)) {\r\n        children.push(null)\r\n      } else {\r\n        var newItemIndex = newKeyIndex[itemKey]\r\n        children.push(newList[newItemIndex])\r\n      }\r\n    } else {\r\n      var freeItem = newFree[freeIndex++]\r\n      children.push(freeItem || null)\r\n    }\r\n    i++\r\n  }\r\n\r\n  var simulateList = children.slice(0)\r\n\r\n  // remove items no longer exist\r\n  i = 0\r\n  while (i < simulateList.length) {\r\n    if (simulateList[i] === null) {\r\n      remove(i)\r\n      removeSimulate(i)\r\n    } else {\r\n      i++\r\n    }\r\n  }\r\n\r\n  // i is cursor pointing to a item in new list\r\n  // j is cursor pointing to a item in simulateList\r\n  var j = i = 0\r\n  while (i < newList.length) {\r\n    item = newList[i]\r\n    itemKey = getItemKey(item, key)\r\n\r\n    var simulateItem = simulateList[j]\r\n    var simulateItemKey = getItemKey(simulateItem, key)\r\n\r\n    if (simulateItem) {\r\n      if (itemKey === simulateItemKey) {\r\n        j++\r\n      } else {\r\n        // new item, just inesrt it\r\n        if (!oldKeyIndex.hasOwnProperty(itemKey)) {\r\n          insert(i, item)\r\n        } else {\r\n          // if remove current simulateItem make item in right place\r\n          // then just remove it\r\n          var nextItemKey = getItemKey(simulateList[j + 1], key)\r\n          if (nextItemKey === itemKey) {\r\n            remove(i)\r\n            removeSimulate(j)\r\n            j++ // after removing, current j is right, just jump to next one\r\n          } else {\r\n            // else insert item\r\n            insert(i, item)\r\n          }\r\n        }\r\n      }\r\n    } else {\r\n      insert(i, item)\r\n    }\r\n\r\n    i++\r\n  }\r\n\r\n  function remove (index) {\r\n    var move = {index: index, type: 0}\r\n    moves.push(move)\r\n  }\r\n\r\n  function insert (index, item) {\r\n    var move = {index: index, item: item, type: 1}\r\n    moves.push(move)\r\n  }\r\n\r\n  function removeSimulate (index) {\r\n    simulateList.splice(index, 1)\r\n  }\r\n\r\n  return {\r\n    moves: moves,\r\n    children: children\r\n  }\r\n}\r\n\r\n/**\r\n * Convert list to key-item keyIndex object.\r\n * @param {Array} list\r\n * @param {String|Function} key\r\n */\r\nfunction makeKeyIndexAndFree (list, key) {\r\n  var keyIndex = {}\r\n  var free = []\r\n  for (var i = 0, len = list.length; i < len; i++) {\r\n    var item = list[i]\r\n    var itemKey = getItemKey(item, key)\r\n    if (itemKey) {\r\n      keyIndex[itemKey] = i\r\n    } else {\r\n      free.push(item)\r\n    }\r\n  }\r\n  return {\r\n    keyIndex: keyIndex,\r\n    free: free\r\n  }\r\n}\r\n\r\nfunction getItemKey (item, key) {\r\n  if (!item || !key) return void 666\r\n  return typeof key === 'string'\r\n    ? item[key]\r\n    : key(item)\r\n}\r\n\r\nexports.makeKeyIndexAndFree = makeKeyIndexAndFree // exports for test\r\nexports.diff = diff\r\n\n\n//# sourceURL=webpack:///./node_modules/list-diff2/lib/diff.js?");
+
+/***/ }),
+
+/***/ "./src/diff.js":
+/*!*********************!*\
+  !*** ./src/diff.js ***!
+  \*********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var _h = __webpack_require__(/*! ./helper */ \"./src/helper.js\");\r\nvar patch = __webpack_require__(/*! ./patch */ \"./src/patch.js\");\r\nvar listDiff = __webpack_require__(/*! list-diff2 */ \"./node_modules/list-diff2/index.js\");\r\n\r\nfunction diff (oldTree, newTree) {\r\n    var index = 0;\r\n    var patches = {};\r\n    dfsWalk(oldTree, newTree, index, patches);\r\n    return patches;\r\n}\r\n\r\nfunction dfsWalk (oldNode, newNode, index, patches) {\r\n    var currentPatch = [];\r\n\r\n    // Node is removed.\r\n    if (newNode === null) {\r\n        // Real DOM node will be removed when perform reordering, so has no needs to do anthings in here\r\n    // TextNode content replacing\r\n    } else if (_h.isString(oldNode) && _h.isString(newNode)) {\r\n        if (newNode !== oldNode) {\r\n            currentPatch.push({ type: patch.TEXT, content: newNode });\r\n        }\r\n    // Nodes are the same, diff old node's props and children\r\n    } else if ( oldNode.tagName === newNode.tagName && oldNode.key === newNode.key ) {\r\n        // Diff props\r\n        var propsPatches = diffProps(oldNode, newNode);\r\n\r\n        if (propsPatches) {\r\n            currentPatch.push({ type: patch.PROPS, props: propsPatches });\r\n        }\r\n        // Diff children. If the node has a `ignore` property, do not diff children\r\n        if (!isIgnoreChildren(newNode)) {\r\n            diffChildren(oldNode.children, newNode.children, index, patches, currentPatch);\r\n        }\r\n    // Nodes are not the same, replace the old node with new node\r\n    } else {\r\n        currentPatch.push({ type: patch.REPLACE, node: newNode });\r\n    }\r\n\r\n    if (currentPatch.length) {\r\n        patches[index] = currentPatch;\r\n    }\r\n}\r\n\r\nfunction diffChildren (oldChildren, newChildren, index, patches, currentPatch) {\r\n    var diffs = listDiff(oldChildren, newChildren, 'key');\r\n    newChildren = diffs.children;\r\n\r\n    if (diffs.moves.length) {\r\n        var reorderPatch = { type: patch.REORDER, moves: diffs.moves };\r\n        currentPatch.push(reorderPatch);\r\n    }\r\n\r\n    var leftNode = null;\r\n    var currentNodeIndex = index;\r\n\r\n    _h.each(oldChildren, function (child, i) {\r\n        var newChild = newChildren[i];\r\n        currentNodeIndex = (leftNode && leftNode.count) ? currentNodeIndex + leftNode.count + 1 : currentNodeIndex + 1;\r\n        dfsWalk(child, newChild, currentNodeIndex, patches);\r\n        leftNode = child;\r\n    })\r\n}\r\n\r\nfunction diffProps (oldNode, newNode) {\r\n    var count = 0;\r\n    var oldProps = oldNode.props;\r\n    var newProps = newNode.props;\r\n\r\n    var key, value;\r\n    var propsPatches = {};\r\n\r\n    // Find out different properties\r\n    for (key in oldProps) {\r\n        value = oldProps[key];\r\n\r\n        if (newProps[key] !== value) {\r\n            count++;\r\n            propsPatches[key] = newProps[key];\r\n        }\r\n    }\r\n\r\n    // Find out new property\r\n    for (key in newProps) {\r\n        value = newProps[key];\r\n\r\n        if (!oldProps.hasOwnProperty(key)) {\r\n            count++;\r\n            propsPatches[key] = newProps[key];\r\n        }\r\n    }\r\n\r\n    // If properties all are identical\r\n    if (count === 0) {\r\n        return null;\r\n    }\r\n\r\n    return propsPatches;\r\n}\r\n\r\nfunction isIgnoreChildren (node) {\r\n    return (node.props && node.props.hasOwnProperty('ignore'));\r\n}\r\n\r\nmodule.exports = diff;\n\n//# sourceURL=webpack:///./src/diff.js?");
+
+/***/ }),
+
+/***/ "./src/element.js":
+/*!************************!*\
+  !*** ./src/element.js ***!
+  \************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var _h = __webpack_require__(/*! ./helper */ \"./src/helper.js\");\n\n/**\n* Virtual-dom Element.\n* @param {String} tagName\n* @param {Object} props - element properties as key-value pair using object as store\n* @param {Array<Element|String>} - children element that can be element instance or plain text\n*/\nfunction Element (tagName, props, children) {\n    // Save current function scope to variable to prevent unforeseen side effects\n    var me = this;\n\n    // Check if current Element is'nt an instance of 'Element'\n    if (!(me instanceof Element)) {\n        // Check if children is'nt an array or isn't null\n        if (!_h.isArray(children) && children != null) {\n            // Slice children array\n            children = _h.slice(arguments, 2).filter(_h.truther);\n        }\n\n        // Return new Element\n        return new Element(tagName, props, children);\n    }\n\n    // Check if props is an array\n    if (_h.isArray(props)) {\n        children = props; // Set children to props\n        props = {}; // Initialize empty props variable\n    }\n\n    me.tagName = tagName // Set tagName\n    me.props = props || {} // Set current elements props if not empty, else initialize empty object\n    me.children = children || [] // Set current elements children if not empty, else initialize empty array\n    me.key = props ? props.key : void 42; // Set current elements key to props.key if props is not empty, else set undefined (void)\n\n    var count = 0; // Initialize count with value of zero\n\n    // Iterate trough current elements children and call function for each one\n    _h.each(me.children, function (child, i) {\n        // Check if current iterated child is an instance of Element,\n        // else set value of child in children array to stringified of child\n        if (child instanceof Element) {\n            count += child.count; // Raise count variable with value of child count variable\n        } else {\n            console.log(child);\n            console.log('' + child);\n            children[i] = '' + child;\n        }\n        count++;\n    })\n\n    me.count = count;\n}\n\n/**\n* Render the hold element tree.\n*/\nElement.prototype.render = function () {\n    // Save current function scope to variable to prevent unforeseen side effects\n    var me = this;\n\n    var el = document.createElement(me.tagName);\n    var props = me.props;\n\n    for (var propName in props) {\n        var propValue = props[propName];\n        _h.setAttr(el, propName, propValue);\n    }\n\n    _h.each(me.children, function (child) {\n        var childEl = (child instanceof Element) ? child.render() : document.createTextNode(child);\n        el.appendChild(childEl);\n    })\n\n    return el;\n}\n\nmodule.exports = Element;\n\n//# sourceURL=webpack:///./src/element.js?");
+
+/***/ }),
+
+/***/ "./src/helper.js":
+/*!***********************!*\
+  !*** ./src/helper.js ***!
+  \***********************/
+/*! no static exports found */
+/***/ (function(module, exports) {
+
+eval("var _h = exports;\n\n// Get type of object\n_h.type = function (obj) {\n    return Object.prototype.toString.call(obj).replace(/\\[object\\s|\\]/g, '');\n}\n\n// Check is type is array\n_h.isArray = function isArray(lst) {\n    return _h.type(lst) === 'Array';\n}\n\n// Check if type is string\n_h.isString = function isString(lst) {\n    return _h.type(lst) === 'String';\n}\n\n// Get boolean value of value\n_h.truther = function truther(val) {\n    return !!val;\n}\n\n// Slice array\n_h.slice = function slice(arr, idx) {\n    return Array.prototype.slice.call(arr, idx);\n}\n\n// Run trough each element of supplied array and call function with each element\n_h.each = function each (arr, fn) {\n    for (var i = 0, len = arr.length; i < len; i++) {\n        fn(arr[i], i);\n    }\n}\n\n_h.toArray = function toArray(lst) {\n    if (!lst) {\n        return [];\n    }\n\n    var l = [];\n\n    for (var i = 0, len = lst.length; i < len; i++) {\n        l[l.length] = lst[i];\n    }\n\n    return l;\n}\n\n// Set attribute of node\n_h.setAttr = function setAttr (node, key, value) {\n    console.log(node);\n    switch (key) {\n        case 'style':\n            node.style.cssText = value;\n            break;\n        case 'value':\n            var tagName = node.tagName || '';\n            tagName = tagName.toLowerCase();\n            if (tagName === 'input' || tagName === 'textarea') {\n                node.value = value;\n            } else {\n                // Set attribute using 'setAttribute' if node is not an input or textarea\n                node.setAttribute(key, value);\n            }\n            break;\n        default:\n            node.setAttribute(key, value);\n            break;\n    }\n}\n\n//# sourceURL=webpack:///./src/helper.js?");
+
+/***/ }),
+
+/***/ "./src/patch.js":
+/*!**********************!*\
+  !*** ./src/patch.js ***!
+  \**********************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("var _h = __webpack_require__(/*! ./helper */ \"./src/helper.js\");\n\nvar REPLACE = 0;\nvar REORDER = 1;\nvar PROPS = 2;\nvar TEXT = 3;\n\nfunction patch (node, patches) {\n    var walker = {index: 0};\n    dfsWalk(node, walker, patches);\n}\n\nfunction dfsWalk (node, walker, patches) {\n    var currentPatches = patches[walker.index];\n\n    var len = node.childNodes ? node.childNodes.length : 0;\n\n    for (var i = 0; i < len; i++) {\n        var child = node.childNodes[i];\n        walker.index++;\n        dfsWalk(child, walker, patches);\n    }\n\n    if (currentPatches) {\n        applyPatches(node, currentPatches);\n    }\n}\n\nfunction applyPatches (node, currentPatches) {\n    _h.each(currentPatches, function (currentPatch) {\n        switch (currentPatch.type) {\n            case REPLACE:\n                var newNode = (typeof currentPatch.node === 'string') ? document.createTextNode(currentPatch.node) : currentPatch.node.render();\n                node.parentNode.replaceChild(newNode, node);\n                break\n            case REORDER:\n                reorderChildren(node, currentPatch.moves);\n                break\n            case PROPS:\n                setProps(node, currentPatch.props)\n                break\n            case TEXT:\n                if (node.textContent) {\n                    node.textContent = currentPatch.content;\n                } else {\n                    node.nodeValue = currentPatch.content;\n                }\n                break\n            default:\n                throw new Error('Unknown patch type ' + currentPatch.type);\n        }\n    })\n}\n\nfunction setProps (node, props) {\n    for (var key in props) {\n        if (props[key] === void 42) {\n            node.removeAttribute(key);\n        } else {\n            var value = props[key]\n            _h.setAttr(node, key, value);\n        }\n    }\n}\n\nfunction reorderChildren (node, moves) {\n    var staticNodeList = _h.toArray(node.childNodes);\n    var maps = {};\n\n    _h.each(staticNodeList, function (node) {\n        if (node.nodeType === 1) {\n            var key = node.getAttribute('key');\n\n            if (key) {\n                maps[key] = node;\n            }\n        }\n    })\n\n    _h.each(moves, function (move) {\n        var index = move.index;\n\n        // Remove item if type is 0\n        if (move.type === 0) {\n            // Check if item has been removed for inserting\n            if (staticNodeList[index] === node.childNodes[index]) {\n                node.removeChild(node.childNodes[index]);\n            }\n\n            staticNodeList.splice(index, 1)\n        // Insert item\n        } else if (move.type === 1) {\n            var insertNode = maps[move.item.key] ? maps[move.item.key].cloneNode(true) : ((typeof move.item === 'object') ? move.item.render() : document.createTextNode(move.item));\n\n            staticNodeList.splice(index, 0, insertNode);\n            node.insertBefore(insertNode, node.childNodes[index] || null);\n        }\n    })\n}\n\npatch.REPLACE = REPLACE;\npatch.REORDER = REORDER;\npatch.PROPS = PROPS;\npatch.TEXT = TEXT;\n\nmodule.exports = patch;\n\n//# sourceURL=webpack:///./src/patch.js?");
+
+/***/ }),
+
+/***/ "./src/virtu-dom.js":
+/*!**************************!*\
+  !*** ./src/virtu-dom.js ***!
+  \**************************/
+/*! no static exports found */
+/***/ (function(module, exports, __webpack_require__) {
+
+eval("exports.element = __webpack_require__(/*! ./element */ \"./src/element.js\");\r\nexports.diff = __webpack_require__(/*! ./diff */ \"./src/diff.js\");\r\nexports.patch = __webpack_require__(/*! ./patch */ \"./src/patch.js\");\n\n//# sourceURL=webpack:///./src/virtu-dom.js?");
+
+/***/ })
+
+/******/ });
