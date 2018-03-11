@@ -1,0 +1,29 @@
+{
+  "name": "virtu-dom",
+  "version": "0.0.1",
+  "description": "A lightweight and simple virtual DOM implementation",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rpauls/virtu-dom.git"
+  },
+  "keywords": [
+    "vdom",
+    "virtual-dom"
+  ],
+  "author": "Robert K. Pauls <r.pauls@robertkpauls.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/rpauls/alf.js/issues"
+  },
+  "homepage": "https://github.com/rpauls/alf.js#readme",
+  "babel": {
+    "presets": "env"
+  },
+  "dependencies": {
+    "list-diff2": "^0.1.4"
+  }
+}
