@@ -1,7 +1,8 @@
 var _h = require('./helper');
 
 /**
-* Virtual-dom Element.
+* Virtual DOM element
+*
 * @param {String} tagName
 * @param {Object} props - element properties as key-value pair using object as store
 * @param {Array<Element|String>} - children element that can be element instance or plain text
@@ -52,7 +53,9 @@ function Element (tagName, props, children) {
 }
 
 /**
-* Render the hold element tree.
+* Render element tree
+*
+* @returns dom-element
 */
 Element.prototype.render = function () {
     // Save current function scope to variable to prevent unforeseen side effects

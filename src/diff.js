@@ -10,12 +10,14 @@ var listDiff = require('list-diff2');
  * @returns
  */
 function diff (oldTree, newTree) {
-    var index = 0;
-    var patches = {};
+    var index = 0; // Initialize with value zero
+    var patches = {}; // Initialize with empty object
 
+     // Call depth-first search function for new and old DOM tree
+     // and pass index and patches variables
     dfsWalk(oldTree, newTree, index, patches);
 
-    return patches;
+    return patches; // Return changes between old and new DOM tree
 }
 
 /**
@@ -27,34 +29,43 @@ function diff (oldTree, newTree) {
  * @param {any} patches
  */
 function dfsWalk (oldNode, newNode, index, patches) {
-    var currentPatch = [];
+    var currentPatch = []; // Initialize with empty array
 
-    // Node is removed
+    // Check if node is null, therefore removed
     if (newNode === null) {
-        // Real DOM node will be removed when perform reordering, so has no needs to do anthings in here
+        // If node ist removed, the real DOM node will be removed when reordering is perfomred
     // TextNode content replacing
     } else if (_h.isString(oldNode) && _h.isString(newNode)) {
         if (newNode !== oldNode) {
             currentPatch.push({ type: patch.TEXT, content: newNode });
         }
-    // Nodes are the same, diff old node's props and children
+    // Check if old and new node are identical
     } else if ( oldNode.tagName === newNode.tagName && oldNode.key === newNode.key ) {
-        // Diff props
+        // Check properties and children of old and new node
+        // and assign possible changes to propsPatches
         var propsPatches = diffProps(oldNode, newNode);
 
+        // Check if propsPatches has a value/is not empty
         if (propsPatches) {
-            currentPatch.push({ type: patch.PROPS, props: propsPatches });
+            // Add changed properties to currentPatch
+            currentPatch[currentPatch.length] = { type: patch.PROPS, props: propsPatches };
         }
-        // Diff children. If the node has a `ignore` property, do not diff children
+
+        // Check if new node has 'ignore' property and should be ignored
         if (!isIgnoreChildren(newNode)) {
+            // Diff children of old and new nodes
+            // and pass index, patches and currentPatch
             diffChildren(oldNode.children, newNode.children, index, patches, currentPatch);
         }
-    // Nodes are not the same, replace the old node with new node
+    // Nodes are not identical
     } else {
-        currentPatch.push({ type: patch.REPLACE, node: newNode });
+        // Replace old node with new node
+        currentPatch[currentPatch.length] = { type: patch.REPLACE, node: newNode };
     }
 
+    // Check if any changes have been stores in currentPatch
     if (currentPatch.length) {
+        // Add currentPatch (changes) to array of all changes at index position
         patches[index] = currentPatch;
     }
 }
