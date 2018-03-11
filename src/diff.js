@@ -2,17 +2,34 @@ var _h = require('./helper');
 var patch = require('./patch');
 var listDiff = require('list-diff2');
 
+/**
+ * Differentiate old DOM tree with new DOM tree
+ *
+ * @param {any} oldTree
+ * @param {any} newTree
+ * @returns
+ */
 function diff (oldTree, newTree) {
     var index = 0;
     var patches = {};
+
     dfsWalk(oldTree, newTree, index, patches);
+
     return patches;
 }
 
+/**
+ * Depth-first search
+ *
+ * @param {any} oldNode
+ * @param {any} newNode
+ * @param {any} index
+ * @param {any} patches
+ */
 function dfsWalk (oldNode, newNode, index, patches) {
     var currentPatch = [];
 
-    // Node is removed.
+    // Node is removed
     if (newNode === null) {
         // Real DOM node will be removed when perform reordering, so has no needs to do anthings in here
     // TextNode content replacing
@@ -42,6 +59,15 @@ function dfsWalk (oldNode, newNode, index, patches) {
     }
 }
 
+/**
+ * Differentiate old children and new children of a node
+ *
+ * @param {any} oldChildren
+ * @param {any} newChildren
+ * @param {any} index
+ * @param {any} patches
+ * @param {any} currentPatch
+ */
 function diffChildren (oldChildren, newChildren, index, patches, currentPatch) {
     var diffs = listDiff(oldChildren, newChildren, 'key');
     newChildren = diffs.children;
@@ -62,6 +88,13 @@ function diffChildren (oldChildren, newChildren, index, patches, currentPatch) {
     })
 }
 
+/**
+ * Differentiate old properties and new properties of a node
+ *
+ * @param {any} oldNode
+ * @param {any} newNode
+ * @returns
+ */
 function diffProps (oldNode, newNode) {
     var count = 0;
     var oldProps = oldNode.props;
@@ -98,8 +131,15 @@ function diffProps (oldNode, newNode) {
     return propsPatches;
 }
 
+/**
+ * Return bool if node has a properties with value 'ignore'
+ *
+ * @param {any} node
+ * @returns
+ */
 function isIgnoreChildren (node) {
     return (node.props && node.props.hasOwnProperty('ignore'));
 }
 
+// Export module as 'diff'
 module.exports = diff;

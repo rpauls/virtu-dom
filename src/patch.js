@@ -1,15 +1,30 @@
 var _h = require('./helper');
 
-var REPLACE = 0;
-var REORDER = 1;
-var PROPS = 2;
-var TEXT = 3;
+// Declare constants
+const REPLACE = 0;
+const REORDER = 1;
+const PROPS = 2;
+const TEXT = 3;
 
+
+/**
+ * Patch differences
+ *
+ * @param {any} node
+ * @param {any} patches
+ */
 function patch (node, patches) {
     var walker = {index: 0};
     dfsWalk(node, walker, patches);
 }
 
+/**
+ * Depth-first search
+ *
+ * @param {any} node
+ * @param {any} walker
+ * @param {any} patches
+ */
 function dfsWalk (node, walker, patches) {
     var currentPatches = patches[walker.index];
 
@@ -26,6 +41,12 @@ function dfsWalk (node, walker, patches) {
     }
 }
 
+/**
+ * Apply patches
+ *
+ * @param {any} node
+ * @param {any} currentPatches
+ */
 function applyPatches (node, currentPatches) {
     _h.each(currentPatches, function (currentPatch) {
         switch (currentPatch.type) {
@@ -52,6 +73,12 @@ function applyPatches (node, currentPatches) {
     })
 }
 
+/**
+ * Set properties on node
+ *
+ * @param {any} node
+ * @param {any} props
+ */
 function setProps (node, props) {
     for (var key in props) {
         if (props[key] === void 42) {
@@ -63,6 +90,12 @@ function setProps (node, props) {
     }
 }
 
+/**
+ * Reorder children of node
+ *
+ * @param {any} node
+ * @param {any} moves
+ */
 function reorderChildren (node, moves) {
     var staticNodeList = _h.toArray(node.childNodes);
     var maps = {};
@@ -98,9 +131,11 @@ function reorderChildren (node, moves) {
     })
 }
 
+// Assign values of constants
 patch.REPLACE = REPLACE;
 patch.REORDER = REORDER;
 patch.PROPS = PROPS;
 patch.TEXT = TEXT;
 
+// Export module as 'patch'
 module.exports = patch;

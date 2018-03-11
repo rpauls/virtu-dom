@@ -58,20 +58,24 @@ Element.prototype.render = function () {
     // Save current function scope to variable to prevent unforeseen side effects
     var me = this;
 
-    var el = document.createElement(me.tagName);
-    var props = me.props;
+    var el = document.createElement(me.tagName); // Create a new dom-element based on tagName variable
+    var props = me.props; // Initialize local props value with current elements props value
 
+    // Iterate trough local props value as propName
     for (var propName in props) {
-        var propValue = props[propName];
-        _h.setAttr(el, propName, propValue);
+        _h.setAttr(el, propName, props[propName]); // Set properties name and value (propbs[propName]) of dom-element
     }
 
+    // Iterate trough children of current element and call function
     _h.each(me.children, function (child) {
+         // Check if child is instance of Element and call render function,
+         // else child is text and create a new dom-textnode
         var childEl = (child instanceof Element) ? child.render() : document.createTextNode(child);
-        el.appendChild(childEl);
+        el.appendChild(childEl); // Append child to dom-element
     })
 
-    return el;
+    return el; // Return dom-element
 }
 
+// Export module as 'Element'
 module.exports = Element;
