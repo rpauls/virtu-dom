@@ -7,12 +7,12 @@ _h.type = function (obj) {
 
 // Check is type is array
 _h.isArray = function isArray(lst) {
-    return _.type(lst) === 'Array';
+    return _h.type(lst) === 'Array';
 }
 
 // Check if type is string
 _h.isString = function isString(lst) {
-    return _.type(lst) === 'String';
+    return _h.type(lst) === 'String';
 }
 
 // Get boolean value of value
@@ -48,6 +48,7 @@ _h.toArray = function toArray(lst) {
 
 // Set attribute of node
 _h.setAttr = function setAttr (node, key, value) {
+    console.log(node);
     switch (key) {
         case 'style':
             node.style.cssText = value;
