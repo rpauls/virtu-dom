@@ -50,26 +50,35 @@ function dfsWalk (node, walker, patches) {
  * @param {any} currentPatches
  */
 function applyPatches (node, currentPatches) {
+    // Iterate trough currentPatches and call function for each one
     _h.each(currentPatches, function (currentPatch) {
+        // Check for type of current patch
         switch (currentPatch.type) {
             case REPLACE:
+                // Get new node and check if node has to be rendered or is only a text node
                 var newNode = (typeof currentPatch.node === 'string') ? document.createTextNode(currentPatch.node) : currentPatch.node.render();
+                // Replace old node with new node
                 node.parentNode.replaceChild(newNode, node);
                 break
             case REORDER:
+                // Reorder old node in new tree
                 reorderChildren(node, currentPatch.moves);
                 break
             case PROPS:
+                // Set property of old node in new tree
                 setProps(node, currentPatch.props)
                 break
             case TEXT:
+                // Check if node has text content
                 if (node.textContent) {
-                    node.textContent = currentPatch.content;
+                    node.textContent = currentPatch.content; // Assign text content from current patch content
                 } else {
-                    node.nodeValue = currentPatch.content;
+                    // IE makes problems
+                    node.nodeValue = currentPatch.content; // Assign node value from current patch content
                 }
                 break
             default:
+                // Thrwo error if patch type is unknown
                 throw new Error('Unknown patch type ' + currentPatch.type);
         }
     })
@@ -82,12 +91,13 @@ function applyPatches (node, currentPatches) {
  * @param {any} props
  */
 function setProps (node, props) {
+    // Iterate trough properties
     for (var key in props) {
+        // Check if property is undefined
         if (props[key] === void 42) {
-            node.removeAttribute(key);
+            node.removeAttribute(key); // Removed attribute from dom-element
         } else {
-            var value = props[key]
-            _h.setAttr(node, key, value);
+            _h.setAttr(node, key, props[key]); // Set attribute of dom-element to key: props[key]
         }
     }
 }
@@ -99,24 +109,28 @@ function setProps (node, props) {
  * @param {any} moves
  */
 function reorderChildren (node, moves) {
-    var staticNodeList = _h.toArray(node.childNodes);
-    var maps = {};
+    var staticNodeList = _h.toArray(node.childNodes); // Initialize with array of child nodes
+    var maps = {}; // Initialize with empty object
 
+    // Iterate trough array of child nodes and call function for each one
     _h.each(staticNodeList, function (node) {
-        if (node.nodeType === 1) {
-            var key = node.getAttribute('key');
+        // Check if type of node is REORDER ('1')
+        if (node.nodeType === REORDER) {
+            var key = node.getAttribute('key'); // Get attribute
 
+            // Check if attribute key exists
             if (key) {
-                maps[key] = node;
+                maps[key] = node; // Add node to maps
             }
         }
     })
 
+    // Iterate trough number of dfs walk moves and call function for each one
     _h.each(moves, function (move) {
-        var index = move.index;
+        var index = move.index; // Initialize with index of current move
 
         // Remove item if type is 0
-        if (move.type === 0) {
+        if (move.type === REPLACE) {
             // Check if item has been removed for inserting
             if (staticNodeList[index] === node.childNodes[index]) {
                 node.removeChild(node.childNodes[index]);
@@ -124,13 +138,14 @@ function reorderChildren (node, moves) {
 
             staticNodeList.splice(index, 1)
         // Insert item
-        } else if (move.type === 1) {
+        } else if (move.type === REORDER) {
             var insertNode = maps[move.item.key] ? maps[move.item.key].cloneNode(true) : ((typeof move.item === 'object') ? move.item.render() : document.createTextNode(move.item));
 
             staticNodeList.splice(index, 0, insertNode);
+
             node.insertBefore(insertNode, node.childNodes[index] || null);
         }
-    })
+    });
 }
 
 // Assign values of constants
