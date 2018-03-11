@@ -19,9 +19,9 @@
   "author": "Robert K. Pauls <r.pauls@robertkpauls.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/rpauls/alf.js/issues"
+    "url": "https://github.com/rpauls/virtu-dom/issues"
   },
-  "homepage": "https://github.com/rpauls/alf.js#readme",
+  "homepage": "https://github.com/rpauls/virtu-dom#readme",
   "dependencies": {
     "list-diff2": "^0.1.4"
   },
